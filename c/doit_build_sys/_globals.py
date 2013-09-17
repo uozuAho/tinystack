@@ -1,6 +1,5 @@
 import os
 
-
 #-----------------------------------------------------------
 # Constants
 
@@ -18,17 +17,10 @@ BUILD_ROOT = os.path.join(PROJECT_ROOT, 'build')
 # This dummy file is used to detect the presence of build_root
 BUILD_ROOT_DUMMY_FILE = os.path.join(BUILD_ROOT, '.dummy')
 
-# Path of the test runner generator script
-TEST_RUNNER_GENERATOR = os.path.join(PROJECT_ROOT, 'test_harness', 'Unity',
-                                     'scripts', 'makeTestRunner.py')
-
-# Path of the generated test runner source
-UNIT_TEST_RUNNER_SOURCE = os.path.join(BUILD_ROOT, 'generated_src',
-                                       '_all_tests.c')
-
 
 #-----------------------------------------------------------
 # Functions
+
 
 def from_proj_root(*args):
     """ Returns os.path.join(PROJECT_ROOT, *args) """

@@ -23,18 +23,19 @@ COMPILER = 'gcc'
 COMPILER_DEFINITIONS = []
 COMPILER_FLAGS = ['-O0', '-g3', '-Wall', '-MMD']
 COMPILER_INCLUDE_DIRS = [
+    _globals.from_proj_root('source', 'include'),
+    _globals.from_proj_root('test', 'test_harness', 'Unity')
 ]
 
 LINKER = 'gcc'
 
-SOURCE_DIRS = []
+SOURCE_DIRS = [
+    _globals.from_proj_root('source'),
+    _globals.from_proj_root('test', 'test_harness', 'Unity'),
+    _globals.from_proj_root('test', 'tests')
+]
 
 SOURCES = _utilities.find_files(SOURCE_DIRS, extensions=['.c'])
-
-HEADERS = _utilities.find_files(SOURCE_DIRS, extensions=['.h'])
-
-# manually add auto-generated sources as they can't be found before building
-SOURCES += [_globals.UNIT_TEST_RUNNER_SOURCE]
 
 OBJECTS = [_utilities.source_to_obj(source, OBJ_DIR) for source in SOURCES]
 
@@ -66,7 +67,6 @@ def get_link_command():
     cmd_args = [LINKER]
     cmd_args += OBJECTS
     cmd_args += ['-o', EXE_TARGET]
-    cmd_args += ['-lm', '-lgcc']
     return arg_list_to_command_string(cmd_args)
 
 
@@ -94,7 +94,7 @@ def get_compile_tasks():
         dependencies = [BUILD_DIR_DUMMY]
         depfile_deps = _utilities.get_obj_dependencies(obj)
         if depfile_deps is None:
-            dependencies += [source] + HEADERS
+            dependencies += [source]
         else:
             dependencies += depfile_deps
         tasks.append({
