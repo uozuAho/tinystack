@@ -172,4 +172,7 @@ def get_run_test_tasks():
         'name': 'run tests',
         'actions': [EXE_TARGET],
         'file_dep': [EXE_TARGET],
+        # dummy target means this task always runs
+        'targets': ['asdfasdf.asdf'],
+        'verbosity': 2
     }]

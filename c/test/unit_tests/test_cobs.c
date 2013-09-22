@@ -101,10 +101,35 @@ TEST_TEAR_DOWN(CobsTests)
 {
 }
 
-TEST(CobsTests, zero_length_data)
+TEST(CobsTests, encode_null_ptr)
 {
-    uint8_t *dummy_ch = NULL;
+    uint8_t *null_ptr = NULL;
     cobs_encode_result result = cobs_encode(out_buffer, sizeof(out_buffer),
-                                            dummy_ch, 0);
+                                            null_ptr, 0);
+    TEST_ASSERT_EQUAL(0, result.out_len);
+    TEST_ASSERT_EQUAL(COBS_ENCODE_NULL_POINTER, result.status);
+}
+
+TEST(CobsTests, encode_zero_len)
+{
+    cobs_encode_result result = cobs_encode(out_buffer, sizeof(out_buffer),
+                                            test_string_0, 0);
     TEST_ASSERT_EQUAL(1, result.out_len);
+    TEST_ASSERT_EQUAL(COBS_ENCODE_OK, result.status);
+}
+
+TEST(CobsTests, encode_out_buf_overflow)
+{
+    uint8_t temp_out_buf[5];
+    uint8_t temp_test_str[] = {'1', '2', '3', '4', '5'};
+
+    cobs_encode_result result =
+        cobs_encode(temp_out_buf, sizeof(temp_out_buf), temp_test_str, 4);
+
+    TEST_ASSERT_EQUAL(COBS_ENCODE_OK, result.status);
+
+    result =
+        cobs_encode(temp_out_buf, sizeof(temp_out_buf), temp_test_str, 5);
+
+    TEST_ASSERT_EQUAL(COBS_ENCODE_OUT_BUFFER_OVERFLOW, result.status);
 }
