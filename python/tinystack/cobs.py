@@ -77,5 +77,4 @@ def decode(in_bytes):
 
 
 if __name__ == '__main__':
-    print encode('blah')
-    print encode('blahblah')
+    pass

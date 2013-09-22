@@ -106,11 +106,11 @@ void test_encode_1(void)
     }
 }
 
-int main(int argc, char **argv)
-{
-#if 1
-    test_encode_1();
-#endif
+// int main(int argc, char **argv)
+// {
+// #if 1
+//     test_encode_1();
+// #endif
 
-    return 0;
-}
+//     return 0;
+// }

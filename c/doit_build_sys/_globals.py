@@ -7,7 +7,7 @@ PROJECT_NAME = 'tinystack'
 
 VERSION_STRING = '0.0.1'
 
-# Root directory of the entire project
+# Root directory of the c project
 # NOTE: This assumes the build script is run from the project root
 PROJECT_ROOT = ''
 

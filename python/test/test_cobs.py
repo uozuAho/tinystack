@@ -115,7 +115,7 @@ class NonZerosTest(unittest.TestCase):
 
 
 class RandomDataTest(unittest.TestCase):
-    NUM_TESTS = 5000
+    NUM_TESTS = 1000
     MAX_LENGTH = 2000
 
     def test_random(self):
