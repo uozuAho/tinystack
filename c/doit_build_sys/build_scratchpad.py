@@ -9,9 +9,9 @@ import _utilities
 # Paths
 
 # Name of this build configuration
-NAME = 'unit_tests'
+NAME = 'scratchpad'
 
-DESCRIPTION = "Build & run unit tests"
+DESCRIPTION = "Run whatever's in the test scratchpad"
 
 # Directory under which all built files/directories will be placed
 BUILD_DIR = _globals.from_build_root(NAME)
@@ -21,22 +21,6 @@ BUILD_DIR_DUMMY = os.path.join(BUILD_DIR, '.dummy')
 
 # Directory to place all c object files
 OBJ_DIR = os.path.join(BUILD_DIR, 'obj')
-
-
-#------------------------------------
-# Unit test runner code generator
-
-# Path of the test runner generator script
-UNIT_TESTS_RUNNER_GENERATOR = _globals.from_proj_root(
-    'test', 'unit_test_harness', 'Unity', 'scripts', 'makeTestRunner.py')
-
-# Root directory of the unit tests
-UNIT_TESTS_LOCATION = _globals.from_proj_root(
-    'test', 'unit_tests')
-
-# Path of the generated test runner source
-UNIT_TEST_RUNNER_SOURCE = _globals.from_build_root(
-    'generated_src', '_all_tests.c')
 
 
 #------------------------------------
@@ -53,21 +37,16 @@ COMPILER_FLAGS = [
 
 COMPILER_INCLUDE_DIRS = [
     _globals.from_proj_root('include'),
-    _globals.from_proj_root('test', 'unit_test_harness', 'Unity')
 ]
 
 LINKER = 'gcc'
 
 SOURCE_DIRS = [
     _globals.from_proj_root('source'),
-    _globals.from_proj_root('test', 'unit_test_harness', 'Unity'),
-    _globals.from_proj_root('test', 'unit_tests')
+    _globals.from_proj_root('test', 'scratchpad')
 ]
 
 SOURCES = _utilities.find_files(SOURCE_DIRS, extensions=['.c'])
-
-# Add generated source manually
-SOURCES += [UNIT_TEST_RUNNER_SOURCE]
 
 OBJECTS = [_utilities.source_to_obj(source, OBJ_DIR) for source in SOURCES]
 
@@ -121,26 +100,6 @@ def get_build_dir_task():
     }
 
 
-def get_code_gen_tasks():
-    "Generate test runner"
-
-    generate_runner_args = ['python',
-                            UNIT_TESTS_RUNNER_GENERATOR,
-                            UNIT_TESTS_LOCATION,
-                            '-o',
-                            UNIT_TEST_RUNNER_SOURCE]
-
-    generate_runner_cmd = arg_list_to_command_string(generate_runner_args)
-
-    return [{
-        'name': 'generate test runners',
-        'actions': [(_utilities.create_dirs, [UNIT_TEST_RUNNER_SOURCE]),
-                    generate_runner_cmd],
-        'targets': [UNIT_TEST_RUNNER_SOURCE],
-        'clean': True
-    }]
-
-
 def get_compile_tasks():
     tasks = [get_build_dir_task()]
 
@@ -173,12 +132,12 @@ def get_link_tasks():
     }]
 
 
-def get_run_test_tasks():
+def get_run_tasks():
     return [{
-        'name': 'run tests',
+        'name': 'run',
         'actions': [EXE_TARGET],
         'file_dep': [EXE_TARGET],
         # dummy target means this task always runs
-        'targets': ['unit_tests'],
+        'targets': ['scratchpad'],
         'verbosity': 2
     }]
