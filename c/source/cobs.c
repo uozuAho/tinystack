@@ -7,7 +7,7 @@
  */
 
 #include <stdlib.h>
-#include "cobs.h"
+#include "tinystack/cobs.h"
 
 
 /*****************************************************************************

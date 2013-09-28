@@ -5,7 +5,7 @@
  */
 
 #include <stdlib.h>
-#include "cobsr.h"
+#include "tinystack/cobsr.h"
 
 
 /*****************************************************************************

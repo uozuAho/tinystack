@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "cobs.h"
+#include "tinystack/cobs.h"
 
 
 //---------------------------------------------------------------

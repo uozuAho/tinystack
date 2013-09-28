@@ -44,9 +44,15 @@ UNIT_TEST_RUNNER_SOURCE = _globals.from_build_root(
 
 COMPILER = 'gcc'
 COMPILER_DEFINITIONS = []
-COMPILER_FLAGS = ['-O0', '-g3', '-Wall', '-MMD']
+COMPILER_FLAGS = [
+    '-O0',      # no optimisation
+    '-g3',      # full debugging info
+    '-Wall',    # all warnings
+    '-MMD'      # generate dependency files
+]
+
 COMPILER_INCLUDE_DIRS = [
-    _globals.from_proj_root('source', 'include'),
+    _globals.from_proj_root('include'),
     _globals.from_proj_root('test', 'unit_test_harness', 'Unity')
 ]
 
