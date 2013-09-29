@@ -52,9 +52,9 @@ def get_crc8ccitt_lookup_table():
 
         for j in range(8):
             if crc & 0x80:
-                crc = ((crc << 1) % 2 ** 8) ^ CRC_8_CCITT_POLY
+                crc = ((crc << 1) & 0xFF) ^ CRC_8_CCITT_POLY
             else:
-                crc = (crc << 1) % 2 ** 8
+                crc = (crc << 1) & 0xFF
 
         table.append(crc)
 
@@ -74,10 +74,10 @@ def get_crc16ccitt_lookup_table():
 
         for j in range(8):
             if (crc ^ c) & 0x8000:
-                crc = ((crc << 1) % 2 ** 16) ^ CRC_16_CCITT_POLY
+                crc = ((crc << 1) & 0xFFFF) ^ CRC_16_CCITT_POLY
             else:
-                crc = (crc << 1) % 2 ** 16
-            c = (c << 1) % 2 ** 16
+                crc = (crc << 1) & 0xFFFF
+            c = (c << 1) & 0xFFFF
 
         table.append(crc)
 
