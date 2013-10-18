@@ -1,15 +1,19 @@
 tinystack
 =========
 
-Little communication stack for embedded systems.
+C & Python implementations of some different OSI layers protocols,
+for building custom communication stacks. Intended for small
+embedded systems.
 
-Aims:
-- UDP style:
--- Fire & forget packets
--- Packet arrival not guaranteed
+General aims
+------------
+- Minimal packet overhead
+
+
+C implementation aims
+---------------------
 - No dynamic memory use
-- Small packet overhead
-- Robust error checking
+- Low code space requirement
 
 
 Dev requirements
