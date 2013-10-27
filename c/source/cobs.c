@@ -3,7 +3,7 @@
  *
  * Consistent Overhead Byte Stuffing
  *
- * Copied from
+ * Copied from https://bitbucket.org/cmcqueen1975/cobs-c/wiki/Home
  */
 
 #include <stdlib.h>

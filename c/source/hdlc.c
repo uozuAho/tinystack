@@ -5,7 +5,7 @@
 
 #include <stdint.h>
 
-#define TINYSTACK_SEND_BYTE(x)        putchar(x)
+#include "tinystack/tinystack_config.h"
 
 //---------------------------------------------------------------
 // constants
@@ -27,18 +27,20 @@ size_t Hdlc_uiSend_blocking(const uint8_t* data, size_t len)
         if (data[bytes_sent] == FRAME_DELIMITER ||
             data[bytes_sent] == ESCAPE_BYTE)
         {
-            while (TINYSTACK_SEND_BYTE(ESCAPE_BYTE) < 0) {}
-            while (TINYSTACK_SEND_BYTE(data[bytes_sent] ^ POST_ESCAPE_BYTE_MASK) < 0) {}
+            while (TINYSTACK_PUTCHAR(ESCAPE_BYTE) < 0) {}
+            while (TINYSTACK_PUTCHAR(data[bytes_sent] ^ POST_ESCAPE_BYTE_MASK) < 0) {}
             bytes_sent++;
         }
-        else if (TINYSTACK_SEND_BYTE(data[bytes_sent]) >= 0)
+        else if (TINYSTACK_PUTCHAR(data[bytes_sent]) >= 0)
             bytes_sent++;
     }
+
+    return bytes_sent;
 }
 
 /// Send a byte with stuffing. Returns the byte on success,
-/// -1 on error. Can block on TINYSTACK_SEND_BYTE if a stuffing
-/// byte is required & TINYSTACK_SEND_BYTE fails
+/// -1 on error. Can block on TINYSTACK_PUTCHAR if a stuffing
+/// byte is required & TINYSTACK_PUTCHAR fails
 int Hdlc_siSendByte_blocking(uint8_t ch)
 {
     int ret = -1;
@@ -48,12 +50,12 @@ int Hdlc_siSendByte_blocking(uint8_t ch)
         // block until the escaped bytes are sent
         for(;;)
         {
-            if (TINYSTACK_SEND_BYTE(ESCAPE_BYTE) >= 0)
+            if (TINYSTACK_PUTCHAR(ESCAPE_BYTE) >= 0)
                 break;
         }
         for(;;)
         {
-            if (TINYSTACK_SEND_BYTE(ch ^ POST_ESCAPE_BYTE_MASK) >= 0)
+            if (TINYSTACK_PUTCHAR(ch ^ POST_ESCAPE_BYTE_MASK) >= 0)
             {
                 ret = ch;
                 break;
@@ -61,7 +63,7 @@ int Hdlc_siSendByte_blocking(uint8_t ch)
         }
     }
     else
-        ret = TINYSTACK_SEND_BYTE(ch);
+        ret = TINYSTACK_PUTCHAR(ch);
 
     return ret;
 }

@@ -34,7 +34,7 @@ def encode(in_bytes):
             if idx - search_start_idx == 0xFD:
                 final_zero = False
                 out_bytes.append('\xFF')
-                out_bytes.append(in_bytes[search_start_idx:idx+1])
+                out_bytes.append(in_bytes[search_start_idx:idx + 1])
                 search_start_idx = idx + 1
         idx += 1
     if idx != search_start_idx or final_zero:
@@ -76,5 +76,21 @@ def decode(in_bytes):
     return ''.join(out_bytes)
 
 
+def test_encode_decode():
+    print ':'.join(x.encode('hex') for x in encode('\x00'))
+    print ':'.join(x.encode('hex') for x in encode('\x11\x22\x00\x33'))
+    print ':'.join(x.encode('hex') for x in encode('\x11\x00\x00\x00'))
+    print ':'.join(x.encode('hex') for x in encode('\x01\x00\x01\x00\x01\x00'))
+    print ':'.join(x.encode('hex') for x in encode('\x01'))
+    print ':'.join(x.encode('hex') for x in encode('\x01\x00'))
+    print ':'.join(x.encode('hex') for x in encode('\x01\x00\x01'))
+    print ':'.join(x.encode('hex') for x in encode('\x01\x00\x00'))
+    print ''
+    print ':'.join(x.encode('hex') for x in decode('\x01'))
+    print ':'.join(x.encode('hex') for x in decode('\x01\x01'))
+    print ':'.join(x.encode('hex') for x in decode('\x03\x11\x22\x02\x33'))
+    print ':'.join(x.encode('hex') for x in decode('\x02\x11\x01\x01\x01'))
+
+
 if __name__ == '__main__':
-    pass
+    test_encode_decode()
