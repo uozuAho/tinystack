@@ -1,5 +1,5 @@
 /**
-    Byte-stream output with COBS encoding
+    Byte-stream input/output with COBS encoding
 */
 
 #include "tinystack/tinystack_config.h"

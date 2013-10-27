@@ -9,26 +9,11 @@
 #ifndef COBS_H_
 #define COBS_H_
 
-
-/*****************************************************************************
- * Includes
- ****************************************************************************/
-
 #include <stdint.h>
 #include <stdlib.h>
 
-
-/*****************************************************************************
- * Defines
- ****************************************************************************/
-
-#define COBS_ENCODE_DST_BUF_LEN_MAX(SRC_LEN)            ((SRC_LEN) + ((SRC_LEN)/254u) + 1)
-#define COBS_DECODE_DST_BUF_LEN_MAX(SRC_LEN)            (((SRC_LEN) == 0) ? 0 : ((SRC_LEN) - 1))
-
-
-/*****************************************************************************
- * Typedefs
- ****************************************************************************/
+//------------------------------------------------------------------------
+// data types
 
 typedef enum
 {
@@ -60,28 +45,35 @@ typedef struct
 } cobs_decode_result;
 
 
-/*****************************************************************************
- * Function prototypes
- ****************************************************************************/
+//------------------------------------------------------------------------
+// public functions
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+
+/// Copy src buffer to destination buffer with COBS encoding
 cobs_encode_result cobs_encode(uint8_t*         dst_buf_ptr,
                                size_t           dst_buf_len,
                                const uint8_t*   src_ptr,
                                size_t           src_len);
 
+
+/// Decode COBS-encoded src buffer into destination buffer
 cobs_decode_result cobs_decode(uint8_t*         dst_buf_ptr,
                                size_t           dst_buf_len,
                                const uint8_t*   src_ptr,
                                size_t           src_len);
 
 
+/// Blocking send data with COBS encoding. Blocks until all
+/// data has been sent using TINYSTACK_PUTCHAR()
+void Cobs_vSendBlocking(const uint8_t* const data, const size_t len);
+
+
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
-
 
 #endif /* COBS_H_ */

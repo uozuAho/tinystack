@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "tinystack/crc.h"
-#include "tinystack/cobs_stream.h"
+#include "tinystack/cobs.h"
 
 void crctest()
 {
