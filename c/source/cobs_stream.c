@@ -5,38 +5,6 @@
 #include "tinystack/tinystack_config.h"
 #include "tinystack/cobs.h"
 
-//------------------------------------------------------------------------
-// debugging
-
-#define DEBUG_THIS_FILE
-#ifdef DEBUG_THIS_FILE
-#include <stdio.h>
-#endif
-
-#ifdef DEBUG_THIS_FILE
-int _dbg_putchar(int x)
-{
-    // byte per line
-    // printf("%02x,  %c\n", x, x);
-
-    // cobs frame per line
-    printf("%02x:", x);
-    return x;
-}
-
-#undef TINYSTACK_PUTCHAR
-#define TINYSTACK_PUTCHAR(x) _dbg_putchar(x)
-
-#define dbg(x)          printf(x)
-#define dbg_num(x)      printf("%d", x)
-#else
-#define dbg(x)
-#define dbg_num(x)
-#endif
-
-// end debugging
-//------------------------------------------------------------------------
-
 
 //------------------------------------------------------------------------
 // public functions
