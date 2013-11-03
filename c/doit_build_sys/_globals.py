@@ -31,3 +31,19 @@ def from_build_root(*args):
 
 def get_exe_target_name(name, extension):
     return PROJECT_NAME+'-'+VERSION_STRING+'-'+name+'.'+extension
+
+
+def source_to_obj_path(source_path, dest_dir):
+    """ Return the path of the object file to be built from the
+        given source file
+    """
+    source_no_ext = os.path.splitext(source_path)[0]
+    return os.path.join(dest_dir, source_no_ext + '.o')
+
+
+def source_to_dep_path(source_path, dest_dir):
+    """ Return the path of the dependency file that will be generated
+        when compiling the source_path
+    """
+    source_no_ext = os.path.splitext(source_path)[0]
+    return os.path.join(dest_dir, source_no_ext + '.d')

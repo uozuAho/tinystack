@@ -1,6 +1,5 @@
 import os
 import _globals
-import _utilities
 from doit.tools import create_folder
 from doit_helpers import file_utils
 from doit_helpers import gcc_utils
@@ -50,7 +49,7 @@ SOURCES = []
 for sdir in SOURCE_DIRS:
     SOURCES += file_utils.find(sdir, '*.c')
 
-OBJECTS = [_utilities.source_to_obj(source, OBJ_DIR) for source in SOURCES]
+OBJECTS = [_globals.source_to_obj_path(source, OBJ_DIR) for source in SOURCES]
 
 DEPS = gcc_utils.get_dependency_dict(OBJ_DIR)
 
@@ -71,8 +70,8 @@ def get_compile_tasks():
     tasks = []
 
     for source in SOURCES:
-        obj = _utilities.source_to_obj(source, OBJ_DIR)
-        dep = _utilities.source_to_dep(source, OBJ_DIR)
+        obj = _globals.source_to_obj_path(source, OBJ_DIR)
+        dep = _globals.source_to_dep_path(source, OBJ_DIR)
         if obj in DEPS:
             dependencies = DEPS[obj]
         else:
