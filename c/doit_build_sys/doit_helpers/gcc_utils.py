@@ -1,3 +1,6 @@
+import file_utils
+
+
 def get_compile_cmd_str(src, obj, compiler='gcc', defs=[], includes=[], flags=[]):
     cmd_args = [compiler]
     cmd_args += ['-D'+d for d in defs]
@@ -8,8 +11,8 @@ def get_compile_cmd_str(src, obj, compiler='gcc', defs=[], includes=[], flags=[]
     return _arg_list_to_command_string(cmd_args)
 
 
-def get_link_cmd_str(target, objs, libs, linker='gcc', libdirs=[], includes=[],
-                     flags=[], linker_script=None):
+def get_link_cmd_str(target, objs, linker='gcc', libdirs=[], libs=[], flags=[],
+                     linker_script=None):
     cmd_args = [linker]
     cmd_args += flags
     cmd_args += ['-L'+d for d in libdirs]
@@ -19,6 +22,17 @@ def get_link_cmd_str(target, objs, libs, linker='gcc', libdirs=[], includes=[],
     cmd_args += objs
     cmd_args += ['-l'+lib for lib in libs]
     return _arg_list_to_command_string(cmd_args)
+
+
+def get_dependency_dict(path, depfile_pattern='*.d'):
+    """ Search path and all subdirectories for dependency files,
+        return a dictionary of target : [dependencies] pairs
+    """
+    depfiles = file_utils.find(path, depfile_pattern)
+    deps = {}
+    for dep in depfiles:
+        deps.update(read_dependency_file(dep))
+    return deps
 
 
 def read_dependency_file(path):
