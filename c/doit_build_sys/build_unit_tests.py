@@ -1,6 +1,9 @@
 import os
 import _globals
 import _utilities
+from doit.tools import create_folder
+from doit_helpers import file_utils
+from doit_helpers import gcc_utils
 
 #-----------------------------------------------------------
 # Constants
@@ -15,9 +18,6 @@ DESCRIPTION = "Build & run unit tests"
 
 # Directory under which all built files/directories will be placed
 BUILD_DIR = _globals.from_build_root(NAME)
-
-# Dummy file that signifies the existence of required build directories
-BUILD_DIR_DUMMY = os.path.join(BUILD_DIR, '.dummy')
 
 # Directory to place all c object files
 OBJ_DIR = os.path.join(BUILD_DIR, 'obj')
@@ -64,12 +64,16 @@ SOURCE_DIRS = [
     _globals.from_proj_root('test', 'unit_tests')
 ]
 
-SOURCES = _utilities.find_files(SOURCE_DIRS, extensions=['.c'])
+SOURCES = []
+for sdir in SOURCE_DIRS:
+    SOURCES += file_utils.find(sdir, '*.c')
 
 # Add generated source manually
 SOURCES += [UNIT_TEST_RUNNER_SOURCE]
 
 OBJECTS = [_utilities.source_to_obj(source, OBJ_DIR) for source in SOURCES]
+
+DEPS = gcc_utils.get_dependency_dict(OBJ_DIR)
 
 EXE_TARGET_NAME = _globals.get_exe_target_name(NAME, 'exe')
 
@@ -77,48 +81,13 @@ EXE_TARGET = os.path.join(BUILD_DIR, EXE_TARGET_NAME)
 
 
 #-----------------------------------------------------------
-# Utility functions
-
-
-def arg_list_to_command_string(arg_list):
-    return ''.join([arg+' ' for arg in arg_list])
-
-
-def get_compile_command(source_path):
-    """ Return a compiler command string """
-    cmd_args = [COMPILER]
-    cmd_args += ['-D'+d for d in COMPILER_DEFINITIONS]
-    cmd_args += ['-I'+i for i in COMPILER_INCLUDE_DIRS]
-    cmd_args += COMPILER_FLAGS + ['-c']
-    cmd_args += ['-o', _utilities.source_to_obj(source_path, OBJ_DIR)]
-    cmd_args += [source_path]
-    return arg_list_to_command_string(cmd_args)
-
-
-def get_link_command():
-    cmd_args = [LINKER]
-    cmd_args += OBJECTS
-    cmd_args += ['-o', EXE_TARGET]
-    return arg_list_to_command_string(cmd_args)
-
-
-def create_build_dirs():
-    _utilities.create_dirs(OBJECTS)
-    # Create the dummy file
-    with open(BUILD_DIR_DUMMY, 'w') as ofile:
-        ofile.write('')
-
-
-#-----------------------------------------------------------
 # Doit task generators
 
 
-def get_build_dir_task():
-    return {
-        'name': 'create build dirs',
-        'actions': [create_build_dirs],
-        'targets': [BUILD_DIR_DUMMY]
-    }
+def get_all_tasks():
+    tasks = get_code_gen_tasks() + get_compile_tasks() + get_link_tasks()
+    tasks += get_run_test_tasks()
+    return tasks
 
 
 def get_code_gen_tasks():
@@ -130,11 +99,11 @@ def get_code_gen_tasks():
                             '-o',
                             UNIT_TEST_RUNNER_SOURCE]
 
-    generate_runner_cmd = arg_list_to_command_string(generate_runner_args)
+    generate_runner_cmd = ' '.join(generate_runner_args)
 
     return [{
         'name': 'generate test runners',
-        'actions': [(_utilities.create_dirs, [UNIT_TEST_RUNNER_SOURCE]),
+        'actions': [(create_folder, [os.path.dirname(UNIT_TEST_RUNNER_SOURCE)]),
                     generate_runner_cmd],
         'targets': [UNIT_TEST_RUNNER_SOURCE],
         'clean': True
@@ -142,20 +111,23 @@ def get_code_gen_tasks():
 
 
 def get_compile_tasks():
-    tasks = [get_build_dir_task()]
+    tasks = []
 
     for source in SOURCES:
         obj = _utilities.source_to_obj(source, OBJ_DIR)
         dep = _utilities.source_to_dep(source, OBJ_DIR)
-        dependencies = [BUILD_DIR_DUMMY]
-        depfile_deps = _utilities.get_obj_dependencies(obj)
-        if depfile_deps is None:
-            dependencies += [source]
+        if obj in DEPS:
+            dependencies = DEPS[obj]
         else:
-            dependencies += depfile_deps
+            dependencies = [source]
         tasks.append({
             'name': source.replace('.c', '.o'),
-            'actions': [get_compile_command(source)],
+            'actions': [(create_folder, [os.path.dirname(obj)]),
+                        gcc_utils.get_compile_cmd_str(source, obj,
+                                                      compiler=COMPILER,
+                                                      defs=COMPILER_DEFINITIONS,
+                                                      includes=COMPILER_INCLUDE_DIRS,
+                                                      flags=COMPILER_FLAGS)],
             'targets': [obj, dep],
             'file_dep': dependencies,
             'clean': True
@@ -166,7 +138,8 @@ def get_compile_tasks():
 def get_link_tasks():
     return [{
         'name': EXE_TARGET_NAME,
-        'actions': [get_link_command()],
+        'actions': [gcc_utils.get_link_cmd_str(EXE_TARGET, OBJECTS,
+                                               linker=LINKER)],
         'file_dep': OBJECTS,
         'targets': [EXE_TARGET],
         'clean': True

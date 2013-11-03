@@ -14,9 +14,6 @@ PROJECT_ROOT = ''
 # All builds go under this directory
 BUILD_ROOT = os.path.join(PROJECT_ROOT, 'build')
 
-# This dummy file is used to detect the presence of build_root
-BUILD_ROOT_DUMMY_FILE = os.path.join(BUILD_ROOT, '.dummy')
-
 
 #-----------------------------------------------------------
 # Functions

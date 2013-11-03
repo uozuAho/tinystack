@@ -19,9 +19,6 @@ DESCRIPTION = "Run whatever's in the test scratchpad"
 # Directory under which all built files/directories will be placed
 BUILD_DIR = _globals.from_build_root(NAME)
 
-# Dummy file that signifies the existence of required build directories
-BUILD_DIR_DUMMY = os.path.join(BUILD_DIR, '.dummy')
-
 # Directory to place all c object files
 OBJ_DIR = os.path.join(BUILD_DIR, 'obj')
 
@@ -64,6 +61,10 @@ EXE_TARGET = os.path.join(BUILD_DIR, EXE_TARGET_NAME)
 
 #-----------------------------------------------------------
 # Doit task generators
+
+
+def get_all_tasks():
+    return get_compile_tasks() + get_link_tasks() + get_run_tasks()
 
 
 def get_compile_tasks():
