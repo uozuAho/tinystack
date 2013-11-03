@@ -1,6 +1,8 @@
 import os
 import _globals
 import _utilities
+from doit_helpers import file_utils
+from doit_helpers import gcc_utils
 
 #-----------------------------------------------------------
 # Constants
@@ -46,7 +48,9 @@ SOURCE_DIRS = [
     _globals.from_proj_root('test', 'scratchpad')
 ]
 
-SOURCES = _utilities.find_files(SOURCE_DIRS, extensions=['.c'])
+SOURCES = []
+for sdir in SOURCE_DIRS:
+    SOURCES += file_utils.find(sdir, '*.c')
 
 OBJECTS = [_utilities.source_to_obj(source, OBJ_DIR) for source in SOURCES]
 
@@ -60,18 +64,7 @@ EXE_TARGET = os.path.join(BUILD_DIR, EXE_TARGET_NAME)
 
 
 def arg_list_to_command_string(arg_list):
-    return ''.join([arg+' ' for arg in arg_list])
-
-
-def get_compile_command(source_path):
-    """ Return a compiler command string """
-    cmd_args = [COMPILER]
-    cmd_args += ['-D'+d for d in COMPILER_DEFINITIONS]
-    cmd_args += ['-I'+i for i in COMPILER_INCLUDE_DIRS]
-    cmd_args += COMPILER_FLAGS + ['-c']
-    cmd_args += ['-o', _utilities.source_to_obj(source_path, OBJ_DIR)]
-    cmd_args += [source_path]
-    return arg_list_to_command_string(cmd_args)
+    return ' '.join(str(arg) for arg in arg_list)
 
 
 def get_link_command():
@@ -114,7 +107,11 @@ def get_compile_tasks():
             dependencies += depfile_deps
         tasks.append({
             'name': source.replace('.c', '.o'),
-            'actions': [get_compile_command(source)],
+            # 'actions': [get_compile_command(source)],
+            'actions': [gcc_utils.get_compile_cmd_str(source, obj,
+                                                      defs=COMPILER_DEFINITIONS,
+                                                      includes=COMPILER_INCLUDE_DIRS,
+                                                      flags=COMPILER_FLAGS)],
             'targets': [obj, dep],
             'file_dep': dependencies,
             'clean': True

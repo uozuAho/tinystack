@@ -10,11 +10,14 @@ def find(path, pattern, exclude_pattern=None, recursive=True):
     if recursive:
         for root, dirnames, filenames in os.walk(path):
             for filename in filenames:
-                if fnmatch(filename, pattern):
+                if fnmatch.fnmatch(filename, pattern):
                     matches.append(os.path.join(root, filename))
     else:
         for path in os.listdir(path):
             if os.path.isfile(path) and fnmatch.fnmatch(path, pattern):
                 matches.append(os.path.join(path))
 
-    return [x for x in matches if not fnmatch.fnmatch(x, exclude_pattern)]
+    if exclude_pattern is None:
+        return matches
+    else:
+        return [x for x in matches if not fnmatch.fnmatch(x, exclude_pattern)]
