@@ -27,7 +27,10 @@
  * Functions
  ****************************************************************************/
 
-cobs_encode_result cobs_encode(uint8_t *dst_buf_ptr, size_t dst_buf_len, const uint8_t * src_ptr, size_t src_len)
+cobs_encode_result cobs_encode(uint8_t *dst_buf_ptr,
+                               size_t dst_buf_len,
+                               const uint8_t * src_ptr,
+                               size_t src_len)
 {
     cobs_encode_result  result              = { 0, COBS_ENCODE_OK };
     const uint8_t *     src_end_ptr         = src_ptr + src_len;
@@ -113,7 +116,10 @@ cobs_encode_result cobs_encode(uint8_t *dst_buf_ptr, size_t dst_buf_len, const u
 }
 
 
-cobs_decode_result cobs_decode(uint8_t *dst_buf_ptr, size_t dst_buf_len, const uint8_t * src_ptr, size_t src_len)
+cobs_decode_result cobs_decode(uint8_t *dst_buf_ptr,
+                               size_t dst_buf_len,
+                               const uint8_t* src_ptr,
+                               size_t src_len)
 {
     cobs_decode_result  result              = { 0, COBS_DECODE_OK };
     const uint8_t *     src_end_ptr         = src_ptr + src_len;
