@@ -17,6 +17,14 @@ const size_t  pkt2_len = 4;
 const uint8_t pkt3[] =   {0x11, 0x00, 0x00, 0x00};
 const size_t  pkt3_len = 4;
 
+static size_t write(const uint8_t* data, size_t len)
+{
+    int i = 0;
+    for (; i < len; i++)
+        printf("%02x:", (data[i]));
+    return i;
+}
+
 void cobs_ostream_test()
 {
     Cobs_vSendBlocking(pkt1, pkt1_len);
@@ -26,7 +34,7 @@ void cobs_ostream_test()
 
 int main()
 {
-    crctest();
+    Cobs_vSetStreamWriter(write);
     cobs_ostream_test();
     return 0;
 }

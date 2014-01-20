@@ -28,7 +28,6 @@ typedef struct
     cobs_encode_status  status;
 } cobs_encode_result;
 
-
 typedef enum
 {
     COBS_DECODE_OK                  = 0x00,
@@ -44,6 +43,7 @@ typedef struct
     cobs_decode_status  status;
 } cobs_decode_result;
 
+typedef size_t (*WriteToStreamFunc)(const uint8_t* data, size_t len);
 
 //------------------------------------------------------------------------
 // public functions
@@ -66,6 +66,9 @@ cobs_decode_result cobs_decode(uint8_t*         dst_buf_ptr,
                                const uint8_t*   src_ptr,
                                size_t           src_len);
 
+/// Set the function that the COBS stream functions will use
+/// to output data
+void Cobs_vSetStreamWriter(WriteToStreamFunc);
 
 /// Blocking send data with COBS encoding. Blocks until all
 /// data has been sent using TINYSTACK_PUTCHAR()

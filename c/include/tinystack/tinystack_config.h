@@ -17,7 +17,7 @@
 #define TINYSTACK_PUTCHAR(x)            putchar(x)
 
 /// Turn tinystack debugging output on/off
-#define TINYSTACK_DEBUG                 1
+#define TINYSTACK_DEBUG                 0
 
 
 // end user config
